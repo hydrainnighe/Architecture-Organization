@@ -61,3 +61,25 @@ I1: ADD R4, R1, R2
 
 I2: MOV R1, R5
 ```
+### Machine Parallelism
+machine parallelism ဆိုတာကတော့ ILP က instructions processer မှာ ပါပြီး တကယ် တစ်ပြိုင်တည်းလုပ်နိုင်တဲ့ pipeline တွေရှိမရှိတင်မက အဲ့ processer က ဘယ်လောက်ထိ instructions တွေကို reorder လုပ်ပေးနိုင်လဲ ၊ independent instructions detect နိုင်လဲ data dependency တွေရှိမရှိနဲ့ breach jmp တွေ resources Conflict တွေကို ဘာ်လိုကိုင်တွယ်မလဲ ဆိုတာတွေ အကုန်ပါဝင်ပါတယ်။
+
+နောက်တစ်ခုကတော့ ordering တွေပါ ။ ILP တွေမှာ fetch ,decode , executed လုပ်ဖို့ အတွက် machine တွေ ကို issue လုပ်ပေးရပါတယ်။ ဒီ issue stage ဟာ instructions decode ပြီးတဲ့ အခါ နဲ့ instructions executed မလုပ်သေးခင် အချိန်ကြားကာလာမှာ  ဆုံးဖြတ်ပေးရတာပါ။
+
+
+superscalar မှာတော့ issues policies သုံးခုရှိပါတယ်
+
+#### *In order issue with in order completion* 
+
+decode ပြီးတဲ့ i1,i2,i3 တွေဟာ execute တဲ့ အခါမှာလည်း order အတိုင်း execute လုပ်ပြီး memory ပေါ် ပြန် write တဲ့ အခါ order အတိုင်း i1,i2,i3 ပြန် write ပါတယ်။
+ဒီ တစ်ခုက ရိုးရှင်းပြီး အကယ်၍ instructions တစ်ခုက လိုတာထက်ကြာ ဖို့ စောင့်ရမယ်ဆိုလည်း stall လုပ်ပြီး စောင့်ပါတယ်။ ဒါပေမယ့် program ကတော့ ပုံမှန်အတိုင်း execute လုပ်ပြီး value တွေက မျှော်မှန်း ထားတဲ့ အတိုင်း ထွက်လာပါတယ်။
+
+#### In order issue with out of order completion 
+
+ဒီ တစ်ခုကတော့ decode ပြီးတော့ order အတိုင်း execute လုပ်တယ်ဆိုပေမယ့် completion ဖြစ်ပြီး memory ပေါ် write တဲ့ အခါ အရင်ပြီးတဲ့ instructions ကို write ပစ်ပါတယ်။ ဒါကြောင့် i1,i2 တစ်ပြိုင်ထဲ လုပ်ပေမယ့် i1 က ကြာလို့ stall ရင် ပြီးတဲ့ i2 ကို memory ပေါ် write ပစ်ပါတယ် ။
+
+
+#### Out of order issue with Out of order completion 
+
+နောက်ဆုံးတစ်ခု ဖြစ်တဲ့ ဒီကောင်ကတော့
+decode လုပ်ပြီးသား instructions တွေကို instructions windows လို့ခေါ်တဲ့ buffer တစ်ခုမှာ သွားရောက် သိမ်းဆည်းပါတယ်။ ပြီးတဲ့‌နောက် execute လုပ်ဖို့ အတွက်  order စီပေးရပါတယ်။ ဥပမာ instruction 1,2 နှစ်ခု decode ပြီးတဲ့ အခါမှာ ဘယ်ကောင်ကို အရင် executed လုပ်ရင် ပိုမြန်မလဲဆိုတာကို စစ်ရတယ် ပြီးမှ execute ပါတယ်။  Write ပြန်လုပ်တဲ့ အခါမှာတော့ အရင်ပြီးတဲ့ instructions ကို အရင် write လုပ်ပါတယ်။ ဒါကြောင့်  instructions တစ်ခုကြာနေရင် stall လုပ်ပြီး နောက် cycle မှ write ပါတယ်။ ဒီ မှာ အဓိကက Instructions windows ကို decode stage ပြီးတဲ့ အခါမှာ သုံးတာပါ။
